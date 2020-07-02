@@ -1,0 +1,21 @@
+fever			2
+tiredness		2
+dry cough 		2
+difficulty in breathing	2
+sore throat		2
+age0_9			0
+age10_19		1
+age20_24		1
+agea25_59		2
+age60+			4
+gender_male		2
+gender_female		1
+severity_mild		1	
+severity_moderate	2
+severity_none		0
+severity_severe		3
+contact_yes		4
+country			x
+
+2 abs X and y =>	 X -> sintomas
+			 Y -> otras cualidades 

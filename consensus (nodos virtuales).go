@@ -2,9 +2,12 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"math"
+	"net"
 	"os"
 	"strconv"
 	"time"
@@ -36,6 +39,8 @@ type Paciente struct {
 	others   int
 	setClass string
 }
+
+//knnPt es la estructura para los puntos del algoritmo KNN
 type knnPt struct {
 	distance float64
 	x        int
@@ -52,6 +57,7 @@ func proccesofChossing(k *knnPt, ATK int, DEF int, p Paciente) {
 	k.y = p.others
 	k.contagio = p.setClass
 }
+
 func getAbs(p *Paciente) {
 	contSim := 0
 	contOth := 0
@@ -106,17 +112,39 @@ func getAbs(p *Paciente) {
 	p.sintoms = contSim
 	p.others = contOth
 
-	if p.sintoms+p.others > 15 {
+	if p.sintoms+p.others > 10 {
 		p.setClass = "contagiado"
 	}
-	if p.sintoms+p.others <= 15 {
+	if p.sintoms+p.others <= 10 {
 		p.setClass = "no contagiado"
 	}
 	contSim = 0
 	contOth = 0
 }
-func main() {
-	data := "covid19.csv"
+
+const localAddr = "192.168.0.28:8000"
+
+const (
+	cnum = iota
+	opContagiado
+	opNoContagiado
+)
+
+var addrs = []string{
+	"192.168.0.27:8000",
+	"192.168.0.9:8000"}
+
+var chInfo chan map[string]int
+
+type estadoPaciente struct {
+	Code int
+	Addr string
+	Op   int
+}
+
+//KNN no sé
+func KNN() int {
+	data := "dataset2.csv"
 	var i = 0
 	var set = [100]Paciente{}
 	file, err := os.Open(data)
@@ -132,7 +160,6 @@ func main() {
 			break
 		} else if err != nil {
 			fmt.Println("Error: ", err)
-			return
 		}
 		fever, _ := strconv.ParseBool(record[0])
 		set[i].fever = fever
@@ -217,14 +244,7 @@ func main() {
 	prueba.contact_yes = true
 	prueba.country = "Perú"
 
-	fmt.Println("paciente de prueba: ")
 	getAbs(&prueba)
-	fmt.Printf("(%s, %d, %d)", prueba.country, prueba.sintoms, prueba.others)
-	fmt.Print("\n\n")
-
-	for i := 0; i < 100; i++ {
-		fmt.Println(set[i].country, set[i].sintoms, "\t", set[i].others, "\t", set[i].setClass)
-	}
 
 	var getPoints = [100]knnPt{}
 	for i := 0; i < 100; i++ {
@@ -232,7 +252,6 @@ func main() {
 		time.Sleep(30)
 	}
 	proccesofChossing(&getPoints[99], prueba.sintoms, prueba.others, set[99])
-
 	for i := 1; i < 100; i++ {
 		for j := 0; j < 100-i; j++ {
 			if getPoints[j].distance > getPoints[j+1].distance {
@@ -240,21 +259,100 @@ func main() {
 			}
 		}
 	}
-
-	println("\n\n")
-	//var count [4]int
 	count := 0
-	for i := 0; i < 3; i++ {
+	var option int
+
+	for i := 0; i < 6; i++ {
 		fmt.Printf("(Sintomas:%d, Others:%d, d: %f, estado: %s)\n", getPoints[i].x, getPoints[i].y, getPoints[i].distance, getPoints[i].contagio)
 		if getPoints[i].contagio == "contagiado" {
 			count++
 		}
 	}
 	fmt.Println("\n")
-	if count > 1 /*deberia ser 1.5*/ { //Si el 50% de los casos "cercanos es mas de 50%"
+	if count > 3 /*deberia ser 1.5*/ { //Si el 50% de los casos "cercanos es mas de 50%"
 		fmt.Println("Estas posiblemente contagiado")
+		option = 0
 	} else {
 		fmt.Println("Estas sano")
+		option = 1
+	}
+	return option
+}
+
+func main() {
+	chInfo = make(chan map[string]int)
+	go func() { chInfo <- map[string]int{} }()
+	go server()
+	time.Sleep(time.Millisecond * 100)
+	var op int
+	for {
+		fmt.Print("Generated option: ")
+		fmt.Scanf("Choosed %d", KNN())
+		msg := estadoPaciente{cnum, localAddr, op}
+		for _, addr := range addrs {
+			send(addr, msg)
+		}
 	}
 
+}
+
+func server() {
+	if ln, err := net.Listen("tcp", localAddr); err != nil {
+		log.Panicln("Can't start listener on", localAddr)
+	} else {
+		defer ln.Close()
+		fmt.Println("Listening on ", localAddr)
+		for {
+			if conn, err := ln.Accept(); err != nil {
+				log.Println("Can't accept", conn.RemoteAddr())
+			} else {
+				go handle(conn)
+			}
+		}
+	}
+}
+func handle(conn net.Conn) {
+	defer conn.Close()
+	dec := json.NewDecoder(conn)
+	var msg estadoPaciente
+	if err := dec.Decode(&msg); err != nil {
+		log.Println("Can't decode from", conn.RemoteAddr())
+	} else {
+		fmt.Println(msg)
+		switch msg.Code {
+		case cnum:
+			concensus(conn, msg)
+		}
+	}
+}
+func concensus(conn net.Conn, msg estadoPaciente) {
+	info := <-chInfo
+	info[msg.Addr] = msg.Op
+	if len(info) == len(addrs) {
+		cContagio, cNoContagio := 0, 0
+		for _, op := range info {
+			if op == opContagiado {
+				cContagio++
+			} else {
+				cNoContagio++
+			}
+		}
+		if cContagio > cNoContagio {
+			fmt.Println("Esta contagiado!")
+		} else {
+			fmt.Println("Te salvaste (Esta vez)")
+		}
+		info = map[string]int{}
+	}
+	go func() { chInfo <- info }()
+}
+func send(remoteAddr string, msg estadoPaciente) {
+	if conn, err := net.Dial("tcp", remoteAddr); err != nil {
+		log.Println("Can't dail", remoteAddr)
+	} else {
+		defer conn.Close()
+		fmt.Println("Sending to ", remoteAddr)
+		enc := json.NewEncoder(conn)
+		enc.Encode(msg)
+	}
 }

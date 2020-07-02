@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+     <head>
+        <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <title>selected attribute</title>
+<link rel="stylesheet" type="text/css" href="fondo.css">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lobster">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    </head>
+
+
+
+    <body style=' margin: 0;
+    padding: 0;
+	background: url("https://www.entornointeligente.com/wp-content/uploads/2020/02/entornointeligente_roberto_pocaterra_pocaterra_buenos_aires_lo_que_tienes_que_saber_sobre_las_nuevas_cifras_del_coronavirus.jpg");    
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+    font-family: sans-serif;'>
+<form action="file:///C:/Users/PC/Desktop/Nueva%20carpeta/prueba.html" onsubmit="myFunction()">
+
+<div class="w3-container w3-lobster">                                                 
+        <h1 style='font-family: "Lobster", serif;  position: absolute; top: 50px; left: 670px;'>Bienvenido al Analizador Covid</h1>
+</div>
+
+<div class="w3-container w3-lobster">                                                 
+		<h1 style='font-family: "Lobster", serif; color: #05687; position: absolute; top: 110px; left: 100px;'>Por favor</h1>
+		<h1 style='font-family: "Lobster", serif; color: #05687; position: absolute; top: 170px; left: 30px;'>tomate tu tiempo y </h1>
+		<h1 style='font-family: "Lobster", serif; color: #05687; position: absolute; top: 230px; left: 100px;'>selecciona </h1>
+		<h1 style='font-family: "Lobster", serif; color: #05687; position: absolute; top: 300px; left: 30px;'>la opcion correcta </h1>
+		<h1 style='font-family: "Lobster", serif; color: #05687; position: absolute; top: 370px; left: 42px;'>para asegurar </h1>
+		<h1 style='font-family: "Lobster", serif; color: #05687; position: absolute; top: 440px; left: 35px;'>un buen resultado </h1>
+	
+</div>
+
+
+<div class="flip-card style = left: 30px;'">
+  <div class="flip-card-inner">
+    <div class="flip-card-front">
+      <img src="https://i.ytimg.com/vi/mA1qCnk4Lg4/hqdefault.jpg" alt="" width="330" height="600">
+    </div>
+  </div>
+</div>
+
+        <form method="GET">                                                                                                   
+            <div  style='color: black; font-weight:  bolder; font-size: 20px; width: 100%; position: absolute; top: 200px; left: 530px; font-family: "Comic Sans MS", cursive, sans-serif;'>
+                <label>fever:</label>
+				<select id="fever" name="fever">
+				<option> Seleccione </option>
+                    {{range .}}
+					<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+                    {{end}}
+				</select>
+				<label>tiredness:</label>
+				<select id="tiredness" name="tiredness">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<label>dryCough:</label>
+			<select id="dryCough" name="dryCough">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<label>difficultyBrithing:</label>
+			<select id="difficultyBrithing" name="difficultyBrithing">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<br></br>
+			<label>soreThroat:</label>
+			<select id="soreThroat" name="soreThroat">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+			
+
+			<label>noneSymtons:</label>
+			<select id="noneSymtons" name="noneSymtons">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<label>age0_9:</label>
+			<select id="age0_9" name="age0_9">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+		
+			<label>age10_19:</label>
+			<select id="age10_19" name="age10_19">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<br></br>
+			<label>age20_24:</label>
+			<select id="age20_24" name="age20_24">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+
+		
+
+			<label>age25_59:</label>
+			<select id="age25_59" name="age25_59">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+			<label>age60:</label>
+			<select id="age60" name="age60">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+			<label>genderFemale:</label>
+			<select id="genderFemale" name="genderFemale">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+			<br></br>
+			<label>genderMale:</label>
+			<select id="genderMale" name="genderMale">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+		
+
+			<label>severityMild:</label>
+			<select id="severityMild" name="severityMild">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<label>severityModerate:</label>
+			<select id="severityModerate" name="severityModerate">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<label>severityNone:</label>
+			<select id="severityNone" name="severityNone">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<br></br>
+			<label>severitySevere:</label>
+			<select id="severitySevere" name="severitySevere">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+
+		
+			<label>contactYes:</label>
+			<select id="contactYes" name="contactYes">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+			<label>country:</label>
+			<select id="country" name="country">
+				{{range .}}
+				<option value="{{.Value}}" id="{{.Id}}" {{if .Selected}}selected{{end}}>{{.Text}}</option>
+				{{end}}
+			</select>
+            </div>
+           <div style="position: absolute;
+  top: 500px;
+  left: 850px;
+  width: 300px;
+  height: 200px;">
+            <input style='display: inline-block; padding: 15px 25px; font-weight:  bolder;  font-size: 24px; cursor: pointer; text-align: center; text-decoration: none; outline: none; color: black;
+                   background-color: #009C8C; border: none; border-radius: 15px; box-shadow: 0 9px #999;' type="submit" value="Analizar" align="center" name = "submit">
+           </div>
+        </form>
+<script>
+function myFunction() {
+  alert("Analisis completado");
+}
+    </body>
+</html>
